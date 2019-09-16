@@ -1,17 +1,20 @@
 var objects 			= [];
-var gravity 		= 0.1;
-var friction		= 0.95;
+var gravity 		= 0.50;
+var friction		= 0.96;
 var run 			= true;
 
 
 window.onload = function(){
 	document.body.onclick = function(){
-		run = false;
+		run = (run ? false : true);
+		console.log("wut");
 	}
 	
 	objects[0] = new Ball(200,200,100);
-	document.body.appendChild(objects[0].div);
-	
+	objects[2] = new Ball(670,400,100);
+	for(let i = 0; i < objects.length; i++){
+		document.body.appendChild(objects[i].div);
+	}
 	globalUpdate();
 }
 
@@ -22,7 +25,7 @@ class Ball{
 		this.mass			= 5;
 		this.position		= [xPos,yPos];
 		this.velocity 		= [0,0];
-		
+		this.aabb			= new Aabb(this.radius, this.radius, this.position);
 		
 		this.div.id 					= "ball";
 		this.div.style.position 		= "absolute";
@@ -30,21 +33,22 @@ class Ball{
 		this.div.style.width 			= this.radius*2;
 		this.div.style.height 			= this.radius*2;
 		this.div.style.borderRadius  	= this.radius + "px";
-		this.div.style.top				= this.position[1]+radius;
-		this.div.style.left				= this.position[0]+radius;
+		this.div.style.top				= this.position[1]-radius;
+		this.div.style.left				= this.position[0]-radius;
 	}
 	
 	update(){
 		this.velocity[1] += gravity; 
 		
 		this.position = add(this.position, this.velocity);
-		
 		this.updatePosition();
+		
+		this.aabb.update(this.position);
 	}
 	
 	updatePosition(){
-		this.div.style.top		= this.position[1]+this.radius;
-		this.div.style.left		= this.position[0]+this.radius;
+		this.div.style.top		= this.position[1]-this.radius;
+		this.div.style.left		= this.position[0]-this.radius;
 	}
 }
 
@@ -52,9 +56,8 @@ function dumbDetection(){
 	for(let i = 0; i < objects.length; i++){
 		for(let k = 0; k < objects.length; k++){
 			//checks if its hitting the floor or the walls
-			if(objects[k].position[1] + (objects[k].radius*2) >= document.body.offsetHeight){
+			if(objects[k].position[1] + (objects[k].radius) >= document.body.offsetHeight){
 				objects[k].velocity = scale(friction, conjugate('x', objects[k].velocity));
-				console.log("shit");
 				objects[k].update();
 			}
 		}
@@ -62,11 +65,14 @@ function dumbDetection(){
 }
 
 async function globalUpdate(){
-	while(run){
-		for(let i = 0; i < objects.length; i++){
-			objects[i].update();
+	for(;;){
+		if(run){
+			for(let i = 0; i < objects.length; i++){
+				objects[i].update();
+			}
+
+			dumbDetection();
 		}
-		dumbDetection();
 		await sleep(33.3);
 	}
 }
