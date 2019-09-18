@@ -1,17 +1,21 @@
 var objects 			= [];
 var gravity 		= 0.50;
-var friction		= 0.96;
+var friction		= 0.99;
 var run 			= true;
-
+var yBounds;
 
 window.onload = function(){
+	yBounds = document.body.offsetHeight;
 	document.body.onclick = function(){
 		run = (run ? false : true);
-		console.log("wut");
+		drawAABB(objects);
 	}
 	
-	objects[0] = new Ball(200,200,100);
-	objects[2] = new Ball(670,400,100);
+	objects[0] = new Ball(200,120,100);
+	objects[1] = new Ball(400,240,100);
+	objects[2] = new Ball(600,460,100);
+	objects[3] = new Ball(800,200,100);
+	objects[4] = new Ball(1010,100,100);
 	for(let i = 0; i < objects.length; i++){
 		document.body.appendChild(objects[i].div);
 	}
@@ -37,9 +41,11 @@ class Ball{
 		this.div.style.left				= this.position[0]-radius;
 	}
 	
-	update(){
-		this.velocity[1] += gravity; 
-		
+	update(acceleration){
+		if(!((this.position[1] + acceleration) >= yBounds)){
+			this.velocity[1] += acceleration; 
+		}
+	
 		this.position = add(this.position, this.velocity);
 		this.updatePosition();
 		
@@ -53,13 +59,11 @@ class Ball{
 }
 
 function dumbDetection(){
-	for(let i = 0; i < objects.length; i++){
-		for(let k = 0; k < objects.length; k++){
-			//checks if its hitting the floor or the walls
-			if(objects[k].position[1] + (objects[k].radius) >= document.body.offsetHeight){
-				objects[k].velocity = scale(friction, conjugate('x', objects[k].velocity));
-				objects[k].update();
-			}
+	for(let k = 0; k < objects.length; k++){
+		//checks if its hitting the floor or the walls
+		if((objects[k].position[1] + objects[k].radius) >= yBounds){
+			objects[k].velocity = scale(friction, conjugate('x', objects[k].velocity));
+			objects[k].update(0);
 		}
 	}
 }
@@ -68,7 +72,7 @@ async function globalUpdate(){
 	for(;;){
 		if(run){
 			for(let i = 0; i < objects.length; i++){
-				objects[i].update();
+				objects[i].update(gravity);
 			}
 
 			dumbDetection();
@@ -90,8 +94,9 @@ function add(vector1, vector2){
 	return([vector1[0] + vector2[0], vector1[1] + vector2[1]])
 }
 function conjugate(oriantation,vector){
-	if(oriantation === 'x')
+	if(oriantation === 'x'){
 		return([vector[0],vector[1]*(-1)]);
+	}
 	else(oriantation === 'y')
 		return([vector[0]*(-1),vector[1]]);
 }	
