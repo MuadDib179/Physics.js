@@ -21,29 +21,30 @@ class Aabb{
 	}
 	
 	union(addAabb){
-		aabb = new AABB(0,0,[0,0]);
-		if(this.aabb.xMin < addAabb.xMin)
-			aabb.xMin = this.aabb.xMin;
+		let aabb = new Aabb(0,0,[0,0]);
+		if(this.xMin < addAabb.xMin)
+			aabb.xMin = this.xMin;
 		else
 			aabb.xMin = addAabb.xMin;
 		
-		if(this.aabb.xMax > addAabb.xMax)
-			aabb.xMax = this.aabb.xMax;
+		if(this.xMax > addAabb.xMax)
+			aabb.xMax = this.xMax;
 		else
 			aabb.xMax = addAabb.xMax;
 		
-		if(this.aabb.yMin < addAabb.yMin)
-			aabb.yMin = this.aabb.yMin;
+		if(this.yMin < addAabb.yMin)
+			aabb.yMin = this.yMin;
 		else
 			aabb.yMin = addAabb.yMin;
 		
-		if(this.aabb.yMin > addAabb.yMin)
-			aabb.yMin = this.aabb.yMin;
+		if(this.yMax > addAabb.yMax)
+			aabb.yMax = this.yMax;
 		else
-			aabb.yMin = addAabb.yMin;
+			aabb.yMax = addAabb.yMax;
 		
-		aabb.position = [aabb.xMin+(aabb.xMax-aabb.xMin)/2,aabb.yMin+(aabb.yMax-aabb.yMin)/2]
-		
+		aabb.position 	= [aabb.xMin+(aabb.xMax-aabb.xMin)/2,aabb.yMin+(aabb.yMax-aabb.yMin)/2]
+		aabb.width 		= (aabb.xMax - aabb.xMin)/2;
+		aabb.height 	= (aabb.yMax - aabb.yMin)/2;
 		return aabb;
 	}
 }
@@ -116,10 +117,10 @@ function drawAABB(aabbs){
 	for(let i = 0; i < aabbs.length; i++){
 		let div = document.createElement("div");
 		div.style.position 	= "absolute";
-		div.style.top 		= aabbs[i].aabb.yMin;
-		div.style.left 		= aabbs[i].aabb.xMin;
-		div.style.width 	= aabbs[i].aabb.width*2;
-		div.style.height 	= aabbs[i].aabb.height*2;
+		div.style.top 		= aabbs[i].yMin;
+		div.style.left 		= aabbs[i].xMin;
+		div.style.width 	= aabbs[i].width*2;
+		div.style.height 	= aabbs[i].height*2;
 		div.style.border 	= "1px solid black";
 		document.body.appendChild(div);
 	}
