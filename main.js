@@ -1,6 +1,6 @@
 var objects 			= [];
 var gravity 		= 0.50;
-var friction		= 0.99;
+var friction		= 0.90;
 var run 			= true;
 var yBounds;
 
