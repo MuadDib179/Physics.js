@@ -49,7 +49,7 @@ class Aabb{
 	}
 
 	volume(){
-		return (this.widthwidth*2)*(this.height*2); 
+		return (this.width*2)*(this.height*2); 
 	}
 }
 
@@ -67,7 +67,7 @@ class Tree{
 			let node = new Node();
 			node.setLeaf(object);
 			node.updateAABB(AABBMargin);
-			insertNode(node, this.root, this.thisTree);
+			this.insertNode(node, this.root);
 		}
 		else{
 			//first node, makes this the root
@@ -77,71 +77,49 @@ class Tree{
 		}
 	}
 	insertNode(node, parent){
-		let par = parent;
-		if(par.isLeaf){
+		console.log(parent);
+		if(parent.isLeaf){
 			let newParent = new Node();
-			newParent.parent = par.parent;
-			newParent.setBranch(node,par);
-			par = newParent;
+			newParent.parent = parent.parent;
+			newParent.setBranch(node,parent);
+			console.log(newParent);
+			// parent = newParent;
+			parent.data = newParent.data;
+			parent.children = newParent.children;
+			parent.parent = newParent.parent;
+			parent.aabb = newParent.parent;
+			parent.isLeaf = newParent.parent;
+			
+			console.log(parent);
 			//checks if the current parent is the root and updates it
-			if(par.parent === null)
-				this.root = par;
+			if(parent.parent === null)
+				this.root = parent;
+			
+			console.log("sup");
 		}
 		else{
 			//compute the volumetric difference of incerting new node to left or right child
-			let leftAabb 		= par.children[0].aabb;
-			let rightAabb 		= par.children[1].aabb;
+			let leftAabb 		= parent.children[0].aabb;
+			let rightAabb 		= parent.children[1].aabb;
 			let leftVolumeDiff 	= leftAabb.union(node.aabb).volume() - leftAabb.volume();
 			let rightVolumeDiff = rightAabb.union(node.aabb).volume() - rightAabb.volume();
-
+			
 			// insert into child that gives less volume increase
 			if(leftVolumeDiff < rightVolumeDiff){
-				insertNode(node, par.children[0],this.thisTree);
-				console.log("inserting new node to children");
+				this.insertNode(node, parent.children[0]);
 			}
 			else{
-				console.log(par === this.root);
-				insertNode(node, par.children[1], this.thisTree);
+				this.insertNode(node, parent.children[1]);
 			}
 
 		}
 
 		// update parent AABB
 		// this will propegate up the ruecursion stack
-		par.updateAABB(AABBMargin);
+		parent.updateAABB(AABBMargin);
 	}
-}
-//testing stuff
-function insertNode(node, parent, scope){
-	let par = parent;
-	if(par.isLeaf){
-		let newParent = new Node();
-		newParent.parent = par.parent;
-		newParent.setBranch(node,par);
-		par = newParent;
-		//checks if the current parent is the root and updates it
-		if(par.parent === null)
-			scope.root = par;
-	}
-	else{
-		//compute the volumetric difference of incerting new node to left or right child
-		let leftAabb 		= par.children[0].aabb;
-		let rightAabb 		= par.children[1].aabb;
-		let leftVolumeDiff 	= leftAabb.union(node.aabb).volume() - leftAabb.volume();
-		let rightVolumeDiff = rightAabb.union(node.aabb).volume() - rightAabb.volume();
+} 
 
-		// insert into child that gives less volume increase
-		if(leftVolumeDiff < rightVolumeDiff){
-			console.log(par === this.root);
-			insertNode(node, par.children[0]);
-		}
-		else{
-			console.log(par === this.root);
-			insertNode(node, par.children[1]);
-		}
-		console.log(par === scope.root);
-	}
-}
 class Node{
 	constructor(){
 		this.data 		= null;
