@@ -133,7 +133,7 @@ class Node{
 	}
 	setBranch(leftNode, rightNode){
 		this.data			= null;
-		this.isLeaf			= null;
+		this.isLeaf			= false;
 		this.children[0] = leftNode;
 		this.children[1] = rightNode;
 		
