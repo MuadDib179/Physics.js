@@ -79,23 +79,19 @@ class Tree{
 	insertNode(node, parent){
 		console.log(parent);
 		if(parent.isLeaf){
-			let newParent = new Node();
-			newParent.parent = parent.parent;
-			newParent.setBranch(node,parent);
-			console.log(newParent);
-			// parent = newParent;
-			parent.data = newParent.data;
-			parent.children = newParent.children;
-			parent.parent = newParent.parent;
-			parent.aabb = newParent.parent;
-			parent.isLeaf = newParent.parent;
-			
-			console.log(parent);
+			var newNode = new Node();
+			newNode.setLeaf(parent.data);
+			parent.setBranch(node, newNode);
+			// parent = newParent; cant do this in javascript :)
+
 			//checks if the current parent is the root and updates it
-			if(parent.parent === null)
-				this.root = parent;
+			if(parent.parent === null){
+				this.root.data = parent.data;
+				this.root.isLeaf = parent.isLeaf;
+				this.root.children = parent.children;
+				this.root.aabb = parent.aabb
+			}
 			
-			console.log("sup");
 		}
 		else{
 			//compute the volumetric difference of incerting new node to left or right child
@@ -136,11 +132,13 @@ class Node{
 		this.isLeaf 		= true;
 	}
 	setBranch(leftNode, rightNode){
-		leftNode.parent = this;
-		rightNode.parent = this;
-
+		this.data			= null;
+		this.isLeaf			= null;
 		this.children[0] = leftNode;
 		this.children[1] = rightNode;
+		
+		leftNode.parent 	= this;
+		rightNode.parent 	= this;
 	}
 	updateAABB(margin){
 		if(this.isLeaf){
