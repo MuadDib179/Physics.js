@@ -1,7 +1,7 @@
 var objects 			= [];
 var gravity 		= 0.50;
 var friction		= 1;
-var run 			= true;
+var run 			= false;
 var yBounds;
 
 window.onload = function(){
@@ -14,11 +14,11 @@ window.onload = function(){
 	objects[0] = new Ball(200,120,100);
 	objects[1] = new Ball(400,240,100);
 	objects[2] = new Ball(600,460,100);
-	objects[3] = new Ball(800,200,100);
-	objects[4] = new Ball(1010,100,100);
-	objects[5] = new Ball(1220,50,100);
-	objects[6] = new Ball(1440,400,100);
-	objects[7] = new Ball(1660,180,100);
+	// objects[3] = new Ball(800,200,100);
+	// objects[4] = new Ball(1010,100,100);
+	// objects[5] = new Ball(1220,50,100);
+	// objects[6] = new Ball(1440,400,100);
+	// objects[7] = new Ball(1660,180,100);
 	for(let i = 0; i < objects.length; i++){
 		document.body.appendChild(objects[i].div);
 	}

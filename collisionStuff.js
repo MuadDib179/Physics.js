@@ -77,7 +77,6 @@ class Tree{
 		}
 	}
 	insertNode(node, parent){
-		console.log(parent);
 		if(parent.isLeaf){
 			var newNode = new Node();
 			newNode.setLeaf(parent.data);
@@ -150,7 +149,7 @@ class Node{
 		}
 		else{
 			// make union of child AABBs of child nodes
-			this.aabb = this.children[0].aabb.union(this.children[1]);
+			this.aabb = this.children[0].aabb.union(this.children[1].aabb);
 		}
 	}
 	getSibling(){
@@ -178,6 +177,28 @@ function absolute(value){
 	else
 		return value*(-1);
 }
-function square(value){
-	return value*value;
+// function square(value){
+// 	return value*value; 			//?? scrap
+// }
+
+function traverseInOrder(n){
+	if(n==null){
+		return;
+	}
+	
+	traverseInOrder(n.children[0]);
+	
+	drawAABB(n.aabb);
+	
+	traverseInOrder(n.children[1]);
 }
+	function drawAABB(aabb){
+		let div = document.createElement("div");
+		div.style.position 	= "absolute";
+		div.style.top 		= aabb.yMin;
+		div.style.left 		= aabb.xMin;
+		div.style.width 	= aabb.width*2;
+		div.style.height 	= aabb.height*2;
+		div.style.border 	= "1px solid black";
+		document.body.appendChild(div);
+	}
