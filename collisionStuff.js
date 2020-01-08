@@ -59,7 +59,11 @@ class Tree{
 		this.thisTree 	= this;
 	}
 	update(){
-		//do stuff
+		if(this.root !== null){
+			if(this.root.isLeaf){
+
+			}
+		}
 	}
 	add(object){
 		if(this.root !== null){
@@ -113,6 +117,44 @@ class Tree{
 		// this will propegate up the ruecursion stack
 		parent.updateAABB(AABBMargin);
 	}
+	remove(node){
+		let parent = node.parent;
+
+		if(parent != this.root){
+			let sibling = node.parent.getSibling();
+			console.log(sibling);
+			if(parent.parent !== null){ //checks if the node has a grandparent
+				//#region updates link
+				//moves the sibling node up one step
+				sibling.parent.data 	= parent.parent.data;
+				sibling.parent.children = parent.parent.children;
+				sibling.parent.parent 	= parent.parent.parent; // :|
+				sibling.parent.aabb 	= parent.parent.aabb;
+				sibling.parent.isLeaf 	= parent.parent.isLeaf;
+				
+				if(parent == parent.parent.children[0]){
+					parent.parent.children[0] = sibling;
+				}
+				else{
+					parent.parent.children[1] = sibling;
+				}
+				//#endregion
+			}
+			else{ //in case of no grandparents makes the sibling node root
+				this.root.data 		= sibling.data;
+				this.root.children 	= sibling.children;
+				this.root.parent 	= null;
+				this.isLeaf 		= sibling.isLeaf;
+			}
+		}
+		else{
+			this.root.data 		= null;
+			this.root.children 	= [null,null];
+			this.parent 		= null;
+			this.aabb 			= null;
+			this.isLeaf 		= false;
+		}
+	}
 } 
 
 class Node{
@@ -146,6 +188,9 @@ class Node{
 			this.aabb.xMax += margin;
 			this.aabb.yMin -= margin;
 			this.aabb.yMax += margin;
+
+			this.aabb.width 	+= margin;
+			this.aabb.height 	+= margin;
 		}
 		else{
 			// make union of child AABBs of child nodes
@@ -153,22 +198,9 @@ class Node{
 		}
 	}
 	getSibling(){
-		return (this.parent.children[0] === this) ? this.parent[1] : this.parent[0];
+		return (this.parent.children[0] === this) ? this.parent.children[1] : this.parent.children[0];
 	}
 	
-}
-
-function drawAABB(aabbs){
-	for(let i = 0; i < aabbs.length; i++){
-		let div = document.createElement("div");
-		div.style.position 	= "absolute";
-		div.style.top 		= aabbs[i].yMin;
-		div.style.left 		= aabbs[i].xMin;
-		div.style.width 	= aabbs[i].width*2;
-		div.style.height 	= aabbs[i].height*2;
-		div.style.border 	= "1px solid black";
-		document.body.appendChild(div);
-	}
 }
 
 function absolute(value){

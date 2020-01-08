@@ -1,25 +1,30 @@
 var objects 			= [];
-var gravity 		= 0.50;
-var friction		= 1;
-var run 			= false;
+var gravity 			= 0.50;
+var friction			= 1;
+var run 				= false;
+var tree;
 var yBounds;
+var xBounds;
 
 window.onload = function(){
+	tree	= new Tree();
 	yBounds = document.body.offsetHeight;
+	xBounds = document.body.offsetWidth;
 	document.body.onclick = function(){
 		run = (run ? false : true);
 		drawAABB(objects);
 	}
 	
-	objects[0] = new Ball(200,120,100);
-	objects[1] = new Ball(400,240,100);
+	objects[0] = new Ball(200,120,60);
+	objects[1] = new Ball(400,240,80);
 	objects[2] = new Ball(600,460,100);
-	// objects[3] = new Ball(800,200,100);
-	// objects[4] = new Ball(1010,100,100);
+	objects[3] = new Ball(800,200,50);
+	objects[4] = new Ball(1010,100,80);
 	// objects[5] = new Ball(1220,50,100);
 	// objects[6] = new Ball(1440,400,100);
 	// objects[7] = new Ball(1660,180,100);
 	for(let i = 0; i < objects.length; i++){
+		this.tree.add(objects[i]);
 		document.body.appendChild(objects[i].div);
 	}
 	globalUpdate();
